@@ -1,0 +1,55 @@
+DROP DATABASE if exists wizards_db;
+CREATE DATABASE IF NOT EXISTS wizards_db;
+USE wizards_db;
+CREATE TABLE IF NOT EXISTS houses(
+	id INT AUTO_INCREMENT NOT NULL,
+	name VARCHAR(50),
+	PRIMARY KEY(id)
+);
+CREATE TABLE IF NOT EXISTS wizards (
+	id INT AUTO_INCREMENT NOT NULL,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+    likes_id INT,
+	house_id INT,
+	PRIMARY KEY(id),
+	FOREIGN KEY(house_id) REFERENCES houses(id),
+    FOREIGN KEY(likes_id) REFERENCES wizards(id)
+);
+INSERT INTO houses  (name) VALUES ("Griffindor"), ("Ravenclaw"), ("Slytherin");
+INSERT INTO
+	wizards (first_name, last_name, likes_id, house_id)
+VALUES
+	("Hermione", "Granger", null, 1),
+    ("Ronald", "Weasley", 1, 1),
+    ("Lucius", "Malfoy", 2, 3);
+SELECT * FROM houses;
+SELECT * FROM wizards;
+SELECT
+	CONCAT(w.first_name, ' ', w.last_name) AS wizard,
+    h.name AS house,
+    CONCAT(l.first_name, ' ', l.last_name) AS likes
+FROM houses AS h
+INNER JOIN wizards AS w
+on h.id = w.house_id
+LEFT JOIN wizards AS l
+ON w.likes_id = l.id;
+    
+
+
+Send a message to office-hours
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

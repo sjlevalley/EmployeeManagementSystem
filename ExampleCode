@@ -45,6 +45,86 @@ use delete statement to delete a row
 
 reference unit 12 activity 13 for this assignment to select by manager/role as well as the "IceCreamCRUD" activity
 
+-- VIEW ALL EMPLOYEES  
+SELECT * FROM employee 
+INNER JOIN role ON employee.role_id = role.role_id 
+INNER JOIN department ON role.department_id = department.department_id; 
+
+-- VIEW EMPLOYEES BY DEPARTMENT
+SELECT * FROM employee 
+INNER JOIN role ON employee.role_id = role.role_id 
+WHERE department_id = 2;
+
+-- VIEW EMPLOYEES BY ROLE
+SELECT * FROM employee 
+INNER JOIN role ON employee.role_id = role.role_id 
+WHERE role.role_id = 5;
+
+
+
+
+drop database if exists employees_DB;
+create database if not exists employees_DB;
+
+use employees_db;
+
+CREATE TABLE IF NOT EXISTS department (
+	department_id INT PRIMARY KEY AUTO_INCREMENT,
+    department_name VARCHAR(30) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS role (
+	role_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(30) NOT NULL,
+    salary DECIMAL(7) NOT NULL,
+    department_id INT,
+    FOREIGN KEY (department_id) REFERENCES department(department_id)
+);
+
+CREATE TABLE IF NOT EXISTS employee (
+	employee_id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL,
+    role_id INT NOT NULL, 
+    manager_id INT,
+    FOREIGN KEY(role_id) REFERENCES role(role_id)
+);
+
+
+INSERT INTO department (department_name)
+VALUES ('Human Resources'), ('Accounting'), ('Engineering');
+
+INSERT INTO role (title, salary, department_id)
+VALUES ('HR Manager', 90000, 1), ('HR Employee', 75000, 1), 
+       ('Accounting Manager', 105000, 2), ('Accountant', 92000, 2),
+       ('Engineering Manager', 125000, 3), ('Engineer', 105000, 3);
+
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
+VALUES ('Joe', 'Rogan', 1, NULL), ('Megan', 'Fox', 2, 1), 
+	   ('Taylor', 'Swift', 3, NULL), ('Betty', 'White', 4, 3), 
+       ('Snoop', 'Dogg', 5, NULL), ('Martha', 'Stewart', 6, 5);
+
+
+SELECT * FROM department;
+SELECT * FROM role;
+SELECT * FROM employee;
+
+-- VIEW ALL EMPLOYEES  
+SELECT * FROM employee 
+INNER JOIN role ON employee.role_id = role.role_id 
+INNER JOIN department ON role.department_id = department.department_id; 
+
+-- VIEW EMPLOYEES BY DEPARTMENT
+SELECT * FROM employee 
+INNER JOIN role ON employee.role_id = role.role_id 
+WHERE department_id = 2;
+
+-- VIEW EMPLOYEES BY ROLE
+SELECT * FROM employee 
+INNER JOIN role ON employee.role_id = role.role_id 
+WHERE role.role_id = 5;
+
+
 
 
 

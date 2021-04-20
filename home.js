@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
+require("console.table");
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -44,22 +45,22 @@ const initialPrompt = () => {
         'Remove Role',
 
 
-        
+
       ],
     })
     .then((answer) => {
       switch (answer.action) {
 
         case 'View All Employees':
-        viewAllEmployees();
+          viewAllEmployees();
           break;
 
         case 'View All Employees by Department':
-        viewAllEmployees();
+          viewAllEmployees();
           break;
 
         case 'View All Employees by Role':
-        viewAllEmployees();
+          viewAllEmployees();
           break;
 
         default:
@@ -76,14 +77,18 @@ const initialPrompt = () => {
 
 const viewAllEmployees = () => {
 
-      const query = 'SELECT * from employee';
-      connection.query(query, (err, res) => {
-    res.forEach(({ first_name, last_name, role_id, manager_id}) => {
-            console.table(`${first_name} | ${last_name} | ${role_id} | ${manager_id}`);
-          });
-          console.table('-----------------------------------');
-          connection.end();
-})};
+  let query = 'SELECT * FROM employee INNER JOIN role ON employee.role_id = role.role_id INNER JOIN department ON role.department_id = department.department_id';
+  connection.query(query, (err, res) => {
+    res.forEach(({ first_name, last_name, role_id, manager_id, title, salary, department_id, department_name }) => {
+      // console.table(`${first_name} | ${last_name} | ${role_id} | ${manager_id} | ${title} | ${salary} | ${department_id} | ${department_name}`);
+      console.table(res);
+    });
+    console.table('-----------------------------------');
+    connection.end();
+  })
+};
+
+
 
 
 // const multiSearch = () => {

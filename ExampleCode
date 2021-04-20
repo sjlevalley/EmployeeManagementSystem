@@ -40,6 +40,11 @@ ON w.likes_id = l.id;
 Send a message to office-hours
 
 
+use delete statement to delete a row
+
+
+reference unit 12 activity 13 for this assignment to select by manager/role as well as the "IceCreamCRUD" activity
+
 
 
 

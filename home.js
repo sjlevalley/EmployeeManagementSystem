@@ -34,7 +34,7 @@ const initialPrompt = () => {
       message: 'What would you like to do?',
       choices: [
         'View All Employees',
-        'View All Employees by Department',
+        'View Employees by Department',
         'View All Employees by Role',
         'Add Employee',
         'Remove Employee',
@@ -43,9 +43,6 @@ const initialPrompt = () => {
         'View All Roles',
         'Add Role',
         'Remove Role',
-
-
-
       ],
     })
     .then((answer) => {
@@ -55,12 +52,12 @@ const initialPrompt = () => {
           viewAllEmployees();
           break;
 
-        case 'View All Employees by Department':
-          viewAllEmployees();
+        case 'View Employees by Department':
+          viewEmployeesByDepartment();
           break;
 
         case 'View All Employees by Role':
-          viewAllEmployees();
+          viewEmployeesByRole();
           break;
 
         default:
@@ -80,7 +77,6 @@ const viewAllEmployees = () => {
   let query = 'SELECT * FROM employee INNER JOIN role ON employee.role_id = role.role_id INNER JOIN department ON role.department_id = department.department_id';
   connection.query(query, (err, res) => {
     res.forEach(({ first_name, last_name, role_id, manager_id, title, salary, department_id, department_name }) => {
-      // console.table(`${first_name} | ${last_name} | ${role_id} | ${manager_id} | ${title} | ${salary} | ${department_id} | ${department_name}`);
       console.table(res);
     });
     console.table('-----------------------------------');
@@ -88,6 +84,62 @@ const viewAllEmployees = () => {
   })
 };
 
+
+// ######################### View Employees By Department ######################
+// ######################### View Employees By Department ######################
+// ######################### View Employees By Department ######################
+
+
+const viewEmployeesByDepartment = () => {
+  inquirer
+    .prompt({
+      name: 'department',
+      type: 'rawlist',
+      message: 'Which department would you like to view?',
+      choices: [
+        'Human Resources',
+        'Accounting',
+        'Engineering',
+      ],   
+    }).then((answer) => {
+
+      let query = 'SELECT * FROM employee INNER JOIN role ON employee.role_id = role.role_id WHERE department_id = 1';
+      connection.query(query, (err, res) => {
+          console.table(res);
+          console.table('-----------------------------------');
+          connection.end();
+      })
+    })};
+
+
+// ######################### View Employees By Role ###########################
+// ######################### View Employees By Role ###########################
+// ######################### View Employees By Role ###########################
+
+const viewEmployeesByRole = () => {
+  inquirer
+    .prompt({
+      name: 'department',
+      type: 'rawlist',
+      message: 'Which department would you like to view?',
+      choices: [
+        'Human Resources Manager',
+        'Human Resources Employee',
+        'Accounting Manager',
+        'Accountant',
+        'Engineering Manager',
+        'Engineer',
+      ],   
+    }).then((answer) => {
+
+      let query = 'SELECT * FROM employee INNER JOIN role ON employee.role_id = role.role_id WHERE role.role_id = 1';
+      connection.query(query, (err, res) => {
+          console.table(res);
+          console.table('-----------------------------------');
+          connection.end();
+      })
+    })};
+    
 
 
 

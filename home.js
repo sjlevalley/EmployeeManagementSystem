@@ -90,9 +90,9 @@ const initialPrompt = () => {
 
 
 
-// ############################### View All Employees ###########################
-// ############################### View All Employees ###########################
-// ############################### View All Employees ###########################
+// ################################# View All Employees ############################
+// ################################# View All Employees ############################
+// ################################# View All Employees ############################
 
 const viewAllEmployees = () => {
 
@@ -108,9 +108,9 @@ const viewAllEmployees = () => {
 };
 
 
-// ######################### View Employees By Department ######################
-// ######################### View Employees By Department ######################
-// ######################### View Employees By Department ######################
+// ########################### View Employees By Department #######################
+// ########################### View Employees By Department #######################
+// ########################### View Employees By Department #######################
 
 
 const viewEmployeesByDepartment = () => {
@@ -147,9 +147,9 @@ const viewEmployeesByDepartment = () => {
    
 
 
-// ######################### View Employees By Role ###########################
-// ######################### View Employees By Role ###########################
-// ######################### View Employees By Role ###########################
+// ########################### View Employees By Role ##############################
+// ########################### View Employees By Role ##############################
+// ########################### View Employees By Role ##############################
 
 const viewEmployeesByRole = () => {
   inquirer
@@ -192,9 +192,9 @@ const viewEmployeesByRole = () => {
       })
     })};
 
-    // ###################################### Add An Employee #######################################
-    // ###################################### Add An Employee #######################################
-    // ###################################### Add An Employee #######################################
+    // ############################## Add An Employee ################################
+    // ############################## Add An Employee ################################
+    // ############################## Add An Employee ################################
 
 const addAnEmployee = () => {
       inquirer
@@ -319,7 +319,9 @@ const addDepartment = () => {
     };
 
 
-// ################################### Add a Role ################################
+// ################################### Add a Role #####################################
+// ################################### Add a Role #####################################
+// ################################### Add a Role #####################################
 
 const addRole = () => {
       inquirer
@@ -367,9 +369,10 @@ const addRole = () => {
       })
     };
         
-    // ###################################### Delete An Employee #######################################
-    // ###################################### Delete An Employee #######################################
-    // ###################################### Delete An Employee #######################################
+    // ###################################### Update a Role #######################################
+    // ###################################### Update a Role #######################################
+    // ###################################### Update a Role #######################################
+
 
     const updateRoles = () => {
       inquirer
@@ -409,27 +412,24 @@ const addRole = () => {
         console.log(answer.updateWhat);
         
     
-    //     const createUpdate = () => {
-    //       console.log('Updating role...\n');
-    //       const query = connection.query(
-    //         'UPDATE role SET ? WHERE ?',
-    //         [
-    //           {
-    //             `${answer.updateWhat}`: `${answer.new}`,
-    //           },
-    //           {
-    //             title: 'Peace of Mind',
-    //           },
-    //         ],
-    //         (err, res) => {
-    //           if (err) throw err;
-    //           console.log(`${res.affectedRows} Role Created!\n`);
-    //           // logs the actual query being run
-    //           console.log(query.sql);
-    //           process.exit();
-    //         }
-    //       );
-    //     };
-    //     createRole();
-    //   })
-    // };
+        const createUpdate = () => {
+          console.log('Updating role...\n');
+          const query = connection.query(
+           `UPDATE role SET ${answer.updateWhat} = ${answer.new} WHERE title= "${answer.update}"`,
+            // [ 
+            //   {
+            //     salary: `${answer.new}`,
+            //   },
+            // ],
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} Role Updated!\n`);
+              // logs the actual query being run
+              console.log(query.sql);
+              process.exit();
+            }
+          )
+        };
+        createUpdate();
+      })
+    };

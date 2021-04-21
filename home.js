@@ -74,6 +74,10 @@ const initialPrompt = () => {
           addRole();
           break;
 
+        case 'Update Employee Role':
+          updateRoles();
+          break;
+
 
         default:
           console.log(`Invalid action: ${answer.action}`);
@@ -367,43 +371,65 @@ const addRole = () => {
     // ###################################### Delete An Employee #######################################
     // ###################################### Delete An Employee #######################################
 
-    // const deleteEmployee = () => {
-    //   inquirer
-    //   .prompt({
-    //   name: 'name',
-    //   type: 'rawlist',
-    //   message: 'Which employee would you like to delete?',
-    //   choices: [
-    //     'Human Resources Manager',
-    //     'Human Resources Employee',
-    //     'Accounting Manager',
-    //     'Accountant',
-    //     'Engineering Manager',
-    //     'Engineer',
-    //   ],   
-    // }).then((answer) => {
-
-    //   let query = 'SELECT employee_id AS "Employee ID", first_name AS "First Name", last_name AS "Last Name", '; 
-    //   query += 'role.title AS "Position", role.salary AS "Salary" FROM employee ';
-    //   query += 'INNER JOIN role ON employee.role_id = role.role_id WHERE role.role_id = 5';
-    //   connection.query(query, (err, res) => {
-    //       console.table(res);
-    //       console.table('-----------------------------------');
-    //       connection.end();
+    const updateRoles = () => {
+      inquirer
+      .prompt([
+        {
+          name: 'update',
+          type: 'list',
+          message: 'Which role would you like to update?',
+          choices: [
+            'HR Manager',
+            'HR Employee',
+            'Accounting Manager',
+            'Accountant',
+            'Engineering Manager',
+            'Engineer'
+          ]
+      },
+        {
+          name: 'updateWhat',
+          type: 'list',
+          message: 'What would you like to update?',
+          choices: [
+            'Title',
+            'Salary',
+            'Department_ID',
+          ]
+      },
+        {
+       name: 'new',
+       type: 'input',
+       message: 'What would you like to change it to?',    
+       default: '200000'
+      },
+      ]).then((answer) => {
+        console.log(answer.updateWhat);
+        answer.updateWhat = answer.updateWhat.toLowerCase();
+        console.log(answer.updateWhat);
+        
+    
+    //     const createUpdate = () => {
+    //       console.log('Updating role...\n');
+    //       const query = connection.query(
+    //         'UPDATE role SET ? WHERE ?',
+    //         [
+    //           {
+    //             `${answer.updateWhat}`: `${answer.new}`,
+    //           },
+    //           {
+    //             title: 'Peace of Mind',
+    //           },
+    //         ],
+    //         (err, res) => {
+    //           if (err) throw err;
+    //           console.log(`${res.affectedRows} Role Created!\n`);
+    //           // logs the actual query being run
+    //           console.log(query.sql);
+    //           process.exit();
+    //         }
+    //       );
+    //     };
+    //     createRole();
     //   })
-    // })};
-
-    //   console.log('Deleting Employee...\n');
-    //   connection.query(
-    //     'DELETE FROM employee WHERE ?',
-    //     {
-    //       employee: `${answer.name}`,
-    //     },
-    //     (err, res) => {
-    //       if (err) throw err;
-    //       console.log(`${res.affectedRows} employee deleted!\n`);
-    //       // Call readProducts AFTER the DELETE completes
-    //       initialPrompt();
-    //     }
-    //   );
     // };

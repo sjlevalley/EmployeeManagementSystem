@@ -119,20 +119,17 @@ const viewEmployeesByDepartment = () => {
         answer.department = 3;
       } 
 
-      console.log("Hello");
-
-      let query = 'SELECT employee_id AS "Employee ID", first_name AS "First Name", last_name AS "Last Name", employee.department_id AS "Department ID"';
-      // query += 'FROM employee';
-      // query += 'INNER JOIN department ON employee.department_id = department.department_id';
-      // query += 'where department.department_id = 1',
-        // let query = 'SELECT * from employee';
-      connection.query(query, (err, res) => {
+        let query = 'SELECT employee_id AS "Employee ID", first_name AS "First Name", last_name AS "Last Name", '; 
+        query += 'employee.department_id AS "Department ID" FROM employee ';
+        query += `INNER JOIN department ON employee.department_id =  department.department_id where department.department_id = ${answer.department};` ;
+        connection.query(query, (err, res) => {
           console.table(res);
           console.table('-----------------------------------');
           connection.end();
+        })
       })
-      })};
-    // })};
+    };
+   
 
 
 // ######################### View Employees By Role ###########################

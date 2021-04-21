@@ -1,5 +1,6 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
+const { restoreDefaultPrompts } = require('inquirer');
 require("console.table");
 
 const connection = mysql.createConnection({
@@ -33,22 +34,49 @@ const initialPrompt = () => {
       type: 'list',
       message: 'What would you like to do?',
       choices: [
-        'View All Employees',
-        'View Employees by Department',
-        'View All Employees by Role',
-        'Add An Employee',
         'Add a Department',
         'Add a Role',
-        'Remove Employee',
-        'Update Employee Role',
-        'Update Employee Manager',
+        'Add An Employee',
+
+        'View All Departments',
         'View All Roles',
+        'View All Employees',
+
+        'Update Employee Role',
+
+        'View Employees by Department',
+        'View All Employees by Role',
+        'Remove Employee',
+        'Update Employee Manager',
+
         'Add Role',
         'Remove Role',
       ],
     })
     .then((answer) => {
       switch (answer.action) {
+
+        case 'Add a Department':
+          addDepartment();
+          break;
+
+        case 'Add a Role':
+          addRole();
+          break;
+
+        case 'Add An Employee':
+          addAnEmployee();
+          break;
+
+        case 'View All Departments':
+          viewAllDepartments();
+          break;
+
+
+
+        case 'View All Roles':
+          viewAllRoles();
+          break;
 
         case 'View All Employees':
           viewAllEmployees();
@@ -62,21 +90,17 @@ const initialPrompt = () => {
           viewEmployeesByRole();
           break;
 
-        case 'Add An Employee':
-          addAnEmployee();
-          break;
 
-        case 'Add a Department':
-          addDepartment();
-          break;
 
-        case 'Add a Role':
-          addRole();
-          break;
 
         case 'Update Employee Role':
           updateRoles();
           break;
+
+        case 'Remove Employee':
+          removeEmployee();
+          break;
+
 
 
         default:
@@ -227,12 +251,12 @@ const addAnEmployee = () => {
       {
         name: 'managerId',
         type: 'list',
-        message: 'What is the manager id of the new employee?',
+        message: 'What is the manager id of the new employee (press enter if none)?',
         choices: [
+        'NULL',
         '1',
         '2',
-        '3',
-        'Null'
+        '3'
         ]
       },
       ]).then((answer) => {
@@ -373,7 +397,6 @@ const addRole = () => {
     // ###################################### Update a Role #######################################
     // ###################################### Update a Role #######################################
 
-
     const updateRoles = () => {
       inquirer
       .prompt([
@@ -416,16 +439,11 @@ const addRole = () => {
           console.log('Updating role...\n');
           const query = connection.query(
            `UPDATE role SET ${answer.updateWhat} = ${answer.new} WHERE title= "${answer.update}"`,
-            // [ 
-            //   {
-            //     salary: `${answer.new}`,
-            //   },
-            // ],
             (err, res) => {
               if (err) throw err;
-              console.log(`${res.affectedRows} Role Updated!\n`);
+              console.table(`${res.affectedRows} Role Updated!\n`);
               // logs the actual query being run
-              console.log(query.sql);
+              console.table(query.sql);
               process.exit();
             }
           )
@@ -433,3 +451,85 @@ const addRole = () => {
         createUpdate();
       })
     };
+
+// ################################## Delete an Employee ###################################
+// ################################## Delete an Employee ###################################
+// ################################## Delete an Employee ###################################
+
+    const removeEmployee = () => {
+      return new Promise ((resolve, reject) => {
+        connection.query('SELECT CONCAT (first_name, " ", last_name) AS "name" FROM employee', (err, res) => {
+          if (err) throw err;
+          inquirer
+          .prompt([
+            {
+              name: 'choice',
+              type: 'list',
+              choices() {
+                const choiceArray = [];
+                res.forEach(({ name }) => {
+                  choiceArray.push(name);
+              });
+              return choiceArray;
+            },
+            message: 'Which employee would you like to Remove?',
+          },
+          ])
+          .then ((answer) => {
+            console.log(answer.choice);
+            resolve(answer);
+
+            connection.query(`DELETE FROM employee WHERE CONCAT (first_name, " ", last_name) = "${answer.choice}";`,
+           
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} employee deleted!\n`);
+              // Call readProducts AFTER the DELETE completes
+              process.exit();
+            }
+            );
+
+          }
+          )}
+        )}
+      )
+    };
+
+// ################################## VIEW ALL ROLES #######################################
+// ################################## VIEW ALL ROLES #######################################
+// ################################## VIEW ALL ROLES #######################################
+
+const viewAllRoles = () => {
+  
+    connection.query('SELECT title AS "Title", salary AS "SALARY", department_id AS "DEPARTMENT ID" FROM role ORDER BY department_id;', (err, res) => {
+      if (err) throw err;
+      console.table(res)
+      process.exit();
+    })
+    
+  };
+
+// ############################### VIEW ALL DEPARTMENTS ####################################
+// ############################### VIEW ALL DEPARTMENTS ####################################
+// ############################### VIEW ALL DEPARTMENTS ####################################
+
+const viewAllDepartments = () => {
+  
+    connection.query('SELECT department_name AS "DEPARTMENT NAME", department_id AS "DEPARTMENT ID" FROM department ORDER BY department_id;', (err, res) => {
+      if (err) throw err;
+      console.table(res)
+      process.exit();
+    })
+  };
+
+
+     
+
+
+//  choices.map(({item_name}) => item_name.itemName);
+
+
+
+
+
+

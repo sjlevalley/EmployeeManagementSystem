@@ -30,13 +30,15 @@ const initialPrompt = () => {
   inquirer
     .prompt({
       name: 'action',
-      type: 'rawlist',
+      type: 'list',
       message: 'What would you like to do?',
       choices: [
         'View All Employees',
         'View Employees by Department',
         'View All Employees by Role',
         'Add An Employee',
+        'Add a Department',
+        'Add a Role',
         'Remove Employee',
         'Update Employee Role',
         'Update Employee Manager',
@@ -63,6 +65,15 @@ const initialPrompt = () => {
         case 'Add An Employee':
           addAnEmployee();
           break;
+
+        case 'Add a Department':
+          addDepartment();
+          break;
+
+        case 'Add a Role':
+          addRole();
+          break;
+
 
         default:
           console.log(`Invalid action: ${answer.action}`);
@@ -263,6 +274,92 @@ const addAnEmployee = () => {
           );
         };
         createEmployee();
+      })
+    };
+
+
+// ################################### Add a Department ################################
+// ################################### Add a Department ################################
+// ################################### Add a Department ################################
+
+const addDepartment = () => {
+      inquirer
+      .prompt([
+        {
+       name: 'name',
+       type: 'input',
+       message: 'What is the name of the department you would like to add?',    
+       default: 'Sales'
+      },
+      ]).then((answer) => {
+        console.log(answer)
+    
+        const createDepartment = () => {
+          console.log('Adding your new department...\n');
+          const query = connection.query(
+            'INSERT INTO department SET ?',
+            {
+              department_name: `${answer.name}`
+            },
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} Department Created!\n`);
+              // logs the actual query being run
+              console.log(query.sql);
+              process.exit();
+            }
+          );
+        };
+        createDepartment();
+      })
+    };
+
+
+// ################################### Add a Role ################################
+
+const addRole = () => {
+      inquirer
+      .prompt([
+        {
+       name: 'title',
+       type: 'input',
+       message: 'What is the role you would like to add?',    
+       default: 'Sales Manager'
+      },
+        {
+       name: 'salary',
+       type: 'input',
+       message: 'What is the salary of this new role?',    
+       default: '92000'
+      },
+        {
+       name: 'id',
+       type: 'input',
+       message: 'What will the department ID be for this role?',    
+       default: '4'
+      },
+      ]).then((answer) => {
+        console.log(answer)
+    
+        const createRole = () => {
+          console.log('Adding your new role...\n');
+          const query = connection.query(
+            'INSERT INTO role SET ?',
+            {
+              title: `${answer.title}`,
+              salary: `${answer.salary}`,
+              department_id: `${answer.id}`
+            },
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} Role Created!\n`);
+              // logs the actual query being run
+              console.log(query.sql);
+              process.exit();
+            }
+          );
+        };
+        createRole();
       })
     };
         

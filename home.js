@@ -36,7 +36,7 @@ const initialPrompt = () => {
         'View All Employees',
         'View Employees by Department',
         'View All Employees by Role',
-        'Add Employee',
+        'Add An Employee',
         'Remove Employee',
         'Update Employee Role',
         'Update Employee Manager',
@@ -60,6 +60,10 @@ const initialPrompt = () => {
           viewEmployeesByRole();
           break;
 
+        case 'Add An Employee':
+          addAnEmployee();
+          break;
+
         default:
           console.log(`Invalid action: ${answer.action}`);
           break;
@@ -68,17 +72,21 @@ const initialPrompt = () => {
 };
 
 
+
+
+
 // ############################### View All Employees ###########################
 // ############################### View All Employees ###########################
 // ############################### View All Employees ###########################
 
 const viewAllEmployees = () => {
 
-  let query = 'SELECT * FROM employee INNER JOIN role ON employee.role_id = role.role_id INNER JOIN department ON role.department_id = department.department_id';
+  let query = 'SELECT employee_id AS "Employee ID", first_name AS "First Name", last_name AS "Last Name",';
+  query += 'role.title AS "Position", role.salary AS "Salary", department_name AS "Department"';
+  query += 'FROM employee INNER JOIN role ON employee.role_id = role.role_id ';
+  query += 'INNER JOIN department ON role.department_id = department.department_id';
   connection.query(query, (err, res) => {
-    res.forEach(({ first_name, last_name, role_id, manager_id, title, salary, department_id, department_name }) => {
       console.table(res);
-    });
     console.table('-----------------------------------');
     connection.end();
   })
@@ -103,13 +111,28 @@ const viewEmployeesByDepartment = () => {
       ],   
     }).then((answer) => {
 
-      let query = 'SELECT * FROM employee INNER JOIN role ON employee.role_id = role.role_id WHERE department_id = 1';
+      if (answer.department === 'Human Resources') {
+        answer.department = 1;
+      } else if (answer.department === 'Accounting') {
+        answer.department = 2;
+      } else {
+        answer.department = 3;
+      } 
+
+      console.log("Hello");
+
+      let query = 'SELECT employee_id AS "Employee ID", first_name AS "First Name", last_name AS "Last Name", employee.department_id AS "Department ID"';
+      // query += 'FROM employee';
+      // query += 'INNER JOIN department ON employee.department_id = department.department_id';
+      // query += 'where department.department_id = 1',
+        // let query = 'SELECT * from employee';
       connection.query(query, (err, res) => {
           console.table(res);
           console.table('-----------------------------------');
           connection.end();
       })
-    })};
+      })};
+    // })};
 
 
 // ######################### View Employees By Role ###########################
@@ -119,9 +142,9 @@ const viewEmployeesByDepartment = () => {
 const viewEmployeesByRole = () => {
   inquirer
     .prompt({
-      name: 'department',
+      name: 'role',
       type: 'rawlist',
-      message: 'Which department would you like to view?',
+      message: 'Which role would you like to view?',
       choices: [
         'Human Resources Manager',
         'Human Resources Employee',
@@ -132,117 +155,161 @@ const viewEmployeesByRole = () => {
       ],   
     }).then((answer) => {
 
-      let query = 'SELECT * FROM employee INNER JOIN role ON employee.role_id = role.role_id WHERE role.role_id = 1';
+      if (answer.role === 'Human Resources Manager') {
+        answer.role = 1;
+      } else if (answer.role === 'Human Resources Employee') {
+        answer.role = 2;
+      } else if (answer.role === 'Accounting Manager') {
+        answer.role = 3;
+      } else if (answer.role === 'Accountant') {
+        answer.role = 4;
+      } else if (answer.role === 'Engineering Manager') {
+        answer.role = 5;
+      } else {
+        answer.role = 6;
+      }
+
+      let query = 'SELECT employee_id AS "Employee ID", first_name AS "First Name", last_name AS "Last Name", '; 
+      query += 'role.title AS "Position", role.salary AS "Salary" FROM employee ';
+      query += `INNER JOIN role ON employee.role_id = role.role_id WHERE role.role_id = ${answer.role}`,
+
       connection.query(query, (err, res) => {
           console.table(res);
           console.table('-----------------------------------');
           connection.end();
       })
     })};
-    
 
+    // ###################################### Add An Employee #######################################
+    // ###################################### Add An Employee #######################################
+    // ###################################### Add An Employee #######################################
 
+const addAnEmployee = () => {
+      inquirer
+      .prompt([
+        {
+       name: 'firstname',
+       type: 'input',
+       message: 'What is the first name of the employee you would like to add?',    
+       default: 'Steve'
+      },
+      {
+        name: 'lastname',
+        type: 'input',
+        message: 'What is the employee last name?',   
+        default: 'LeSteve' 
+      },
+      {
+        name: 'role',
+        type: 'list',
+        message: 'What is the role of this new employee?',
+        choices: [
+        'Human Resources Manager',
+        'Human Resources Employee',
+        'Accounting Manager',
+        'Accountant',
+        'Engineering Manager',
+        'Engineer'
+        ]
+      },
+      {
+        name: 'managerId',
+        type: 'list',
+        message: 'What is the manager id of the new employee?',
+        choices: [
+        '1',
+        '2',
+        '3',
+        'Null'
+        ]
+      },
+      ]).then((answer) => {
+        console.log(answer)
+      
+        if (answer.role === 'Human Resources Manager') {
+          answer.role = 1;
+          answer.department = 1
+        } else if (answer.role === 'Human Resources Employee') {
+          answer.role = 2;
+          answer.department = 1
+        } else if (answer.role === 'Accounting Manager') {
+          answer.role = 3;
+          answer.department = 2
+        } else if (answer.role === 'Accountant') {
+          answer.role = 4;
+          answer.department = 2
+        } else if (answer.role === 'Engineering Manager') {
+          answer.role = 5;
+          answer.department = 3
+        } else {
+          answer.role = 6;
+          answer.department = 3
+        }
+        const createEmployee = () => {
+          console.log('Adding a new employee...\n');
+          const query = connection.query(
+            'INSERT INTO employee SET ?',
+            {
+              first_name: `${answer.firstname}`,
+              last_name: `${answer.lastname}`,
+              role_id: `${answer.role}`,
+              manager_id: `${answer.managerId}`,
+              department_id: `${answer.department}`
+            },
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} Employee Created!\n`);
+              // logs the actual query being run
+              console.log(query.sql);
+              process.exit();
+            }
+          );
+        };
+        createEmployee();
+      })
+    };
+        
+    // ###################################### Delete An Employee #######################################
+    // ###################################### Delete An Employee #######################################
+    // ###################################### Delete An Employee #######################################
 
-// const multiSearch = () => {
-//   const query =
-//     'SELECT artist FROM top5000 GROUP BY artist HAVING count(*) > 1';
-//   connection.query(query, (err, res) => {
-//     res.forEach(({ artist }) => console.log(artist));
-//     runSearch();
-//   });
-// };
+    // const deleteEmployee = () => {
+    //   inquirer
+    //   .prompt({
+    //   name: 'name',
+    //   type: 'rawlist',
+    //   message: 'Which employee would you like to delete?',
+    //   choices: [
+    //     'Human Resources Manager',
+    //     'Human Resources Employee',
+    //     'Accounting Manager',
+    //     'Accountant',
+    //     'Engineering Manager',
+    //     'Engineer',
+    //   ],   
+    // }).then((answer) => {
 
-// const rangeSearch = () => {
-//   inquirer
-//     .prompt([
-//       {
-//         name: 'start',
-//         type: 'input',
-//         message: 'Enter starting position: ',
-//         validate(value) {
-//           if (isNaN(value) === false) {
-//             return true;
-//           }
-//           return false;
-//         },
-//       },
-//       {
-//         name: 'end',
-//         type: 'input',
-//         message: 'Enter ending position: ',
-//         validate(value) {
-//           if (isNaN(value) === false) {
-//             return true;
-//           }
-//           return false;
-//         },
-//       },
-//     ])
-//     .then((answer) => {
-//       const query =
-//         'SELECT position,song,artist,year FROM top5000 WHERE position BETWEEN ? AND ?';
-//       connection.query(query, [answer.start, answer.end], (err, res) => {
-//         res.forEach(({ position, song, artist, year }) => {
-//           console.log(
-//             `Position: ${position} || Song: ${song} || Artist: ${artist} || Year: ${year}`
-//           );
-//         });
-//         runSearch();
-//       });
-//     });
-// };
+    //   let query = 'SELECT employee_id AS "Employee ID", first_name AS "First Name", last_name AS "Last Name", '; 
+    //   query += 'role.title AS "Position", role.salary AS "Salary" FROM employee ';
+    //   query += 'INNER JOIN role ON employee.role_id = role.role_id WHERE role.role_id = 5';
+    //   connection.query(query, (err, res) => {
+    //       console.table(res);
+    //       console.table('-----------------------------------');
+    //       connection.end();
+    //   })
+    // })};
 
-// const songSearch = () => {
-//   inquirer
-//     .prompt({
-//       name: 'song',
-//       type: 'input',
-//       message: 'What song would you like to look for?',
-//     })
-//     .then((answer) => {
-//       console.log(answer.song);
-//       connection.query(
-//         'SELECT * FROM top5000 WHERE ?',
-//         { song: answer.song },
-//         (err, res) => {
-//           if (res[0]) {
-//             console.log(
-//               `Position: ${res[0].position} || Song: ${res[0].song} || Artist: ${res[0].artist} || Year: ${res[0].year}`
-//             );
-//           } else {
-//             console.error(`No results for ${answer.song}`);
-//           }
-//           runSearch();
-//         }
-//       );
-//     });
-// };
-
-// const songAndAlbumSearch = () => {
-//   inquirer
-//     .prompt({
-//       name: 'artist',
-//       type: 'input',
-//       message: 'What artist would you like to search for?',
-//     })
-//     .then((answer) => {
-//       let query =
-//         'SELECT top_albums.year, top_albums.album, top_albums.position, top5000.song, top5000.artist ';
-//       query +=
-//         'FROM top_albums INNER JOIN top5000 ON (top_albums.artist = top5000.artist AND top_albums.year ';
-//       query +=
-//         '= top5000.year) WHERE (top_albums.artist = ? AND top5000.artist = ?) ORDER BY top_albums.year, top_albums.position';
-
-//       connection.query(query, [answer.artist, answer.artist], (err, res) => {
-//         console.log(`${res.length} matches found!`);
-//         res.forEach(({ year, position, artist, song, album }, i) => {
-//           const num = i + 1;
-//           console.log(
-//             `${num} Year: ${year} Position: ${position} || Artist: ${artist} || Song: ${song} || Album: ${album}`
-//           );
-//         });
-
-//         runSearch();
-//       });
-//     });
-// };
+    //   console.log('Deleting Employee...\n');
+    //   connection.query(
+    //     'DELETE FROM employee WHERE ?',
+    //     {
+    //       employee: `${answer.name}`,
+    //     },
+    //     (err, res) => {
+    //       if (err) throw err;
+    //       console.log(`${res.affectedRows} employee deleted!\n`);
+    //       // Call readProducts AFTER the DELETE completes
+    //       initialPrompt();
+    //     }
+    //   );
+    // };

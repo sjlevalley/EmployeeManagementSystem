@@ -3,6 +3,7 @@ const inquirer = require('inquirer');
 const { restoreDefaultPrompts } = require('inquirer');
 require("console.table");
 
+
 const connection = mysql.createConnection({
   host: 'localhost',
 
@@ -37,82 +38,59 @@ const initialPrompt = () => {
         'Add a Department',
         'Add a Role',
         'Add An Employee',
-
         'View All Departments',
         'View All Roles',
         'View All Employees',
-
         'Update Employee Role',
-
         'View Employees by Department',
         'View All Employees by Role',
         'Remove Employee',
         'Update Employee Manager',
-
         'Add Role',
         'Remove Role',
       ],
     })
     .then((answer) => {
       switch (answer.action) {
-
         case 'Add a Department':
           addDepartment();
           break;
-
         case 'Add a Role':
           addRole();
           break;
-
         case 'Add An Employee':
           addAnEmployee();
           break;
-
         case 'View All Departments':
           viewAllDepartments();
           break;
-
-
-
         case 'View All Roles':
           viewAllRoles();
           break;
-
         case 'View All Employees':
           viewAllEmployees();
           break;
-
         case 'View Employees by Department':
           viewEmployeesByDepartment();
           break;
-
         case 'View All Employees by Role':
           viewEmployeesByRole();
           break;
-
-
-
-
         case 'Update Employee Role':
           updateRoles();
           break;
-
         case 'Remove Employee':
           removeEmployee();
           break;
-
-
-
+        case 'Remove Role':
+          removeRole();
+          break;
         default:
           console.log(`Invalid action: ${answer.action}`);
           break;
       }
     });
 };
-
-
-
-
 
 // ################################# View All Employees ############################
 // ################################# View All Employees ############################
@@ -157,7 +135,6 @@ const viewEmployeesByDepartment = () => {
       } else {
         answer.department = 3;
       } 
-
         let query = 'SELECT employee_id AS "Employee ID", first_name AS "First Name", last_name AS "Last Name", '; 
         query += 'employee.department_id AS "Department ID" FROM employee ';
         query += `INNER JOIN department ON employee.department_id =  department.department_id where department.department_id = ${answer.department};` ;
@@ -169,8 +146,6 @@ const viewEmployeesByDepartment = () => {
       })
     };
    
-
-
 // ########################### View Employees By Role ##############################
 // ########################### View Employees By Role ##############################
 // ########################### View Employees By Role ##############################
@@ -298,13 +273,14 @@ const addAnEmployee = () => {
               // logs the actual query being run
               console.log(query.sql);
               process.exit();
+              
             }
           );
         };
         createEmployee();
+        
       })
     };
-
 
 // ################################### Add a Department ################################
 // ################################### Add a Department ################################
@@ -495,6 +471,49 @@ const addRole = () => {
       )
     };
 
+// ################################## Delete a Role ###################################
+// ################################## Delete a Role ###################################
+// ################################## Delete a Role ###################################
+
+
+    const removeRole = () => {
+      return new Promise ((resolve, reject) => {
+        connection.query('SELECT title AS "Title" FROM role;', (err, res) => {
+          if (err) throw err;
+          inquirer
+          .prompt([
+            {
+              name: 'choice',
+              type: 'list',
+              choices() {
+                const choiceArray = [];
+                res.forEach(({ Title }) => {
+                  choiceArray.push(Title);
+              });
+              return choiceArray;
+            },
+            message: 'Which role would you like to Remove?',
+          },
+          ])
+          .then ((answer) => {
+            console.log(answer.choice);
+            resolve(answer);
+
+            connection.query(`DELETE FROM role WHERE title = "${answer.choice}";`,
+           
+            (err, res) => {
+              if (err) throw err;
+              console.log(`${res.affectedRows} role deleted!\n`);
+              // Call readProducts AFTER the DELETE completes
+              process.exit();
+            }
+            );
+          }
+          )}
+        )}
+      )
+    };
+
 // ################################## VIEW ALL ROLES #######################################
 // ################################## VIEW ALL ROLES #######################################
 // ################################## VIEW ALL ROLES #######################################
@@ -505,8 +524,7 @@ const viewAllRoles = () => {
       if (err) throw err;
       console.table(res)
       process.exit();
-    })
-    
+    }) 
   };
 
 // ############################### VIEW ALL DEPARTMENTS ####################################
@@ -526,7 +544,7 @@ const viewAllDepartments = () => {
      
 
 
-//  choices.map(({item_name}) => item_name.itemName);
+
 
 
 

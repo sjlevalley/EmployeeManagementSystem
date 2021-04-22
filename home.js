@@ -342,7 +342,7 @@ const addRole = () => {
       {
         name: 'id',
         type: 'input',
-        message: 'What will the department ID be for this role?',
+        message: 'What will the role ID be for this role?',
         default: '4'
       },
     ]).then((answer) => {

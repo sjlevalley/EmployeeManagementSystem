@@ -5,7 +5,8 @@
 ## DESCRIPTION
  - This project enables the user to manage departments, positions, employees, and various information specifically pertaining to each department, position, and employee or group of employees.
 
- - This project can be found at the following url - [EmployeeManagementSystem](https://sjlevalley.github.io/EmployeeManagementSystem/).
+ - This project can be found at the following link - [EmployeeManagementSystem](https://sjlevalley.github.io/EmployeeManagementSystem/).
+ - The video demonstration can be found at the following link - [Demonstration](https://www.loom.com/share/208016e208414e19b60b07684e4a5f5f).
 
 ## TABLE OF CONTENTS
 * [Description](#description)
